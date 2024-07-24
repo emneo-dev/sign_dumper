@@ -43,7 +43,7 @@ CXXFLAGS += -Werror=vla-larger-than=0
 CXXFLAGS += -Wlogical-op
 endif
 
-LDFLAGS :=
+LDFLAGS := -lz
 
 ifeq ($(NATIVE), 1)
 CXXFLAGS += -march=native -mtune=native

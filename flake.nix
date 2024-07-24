@@ -21,6 +21,7 @@
           nativeBuildInputs = with pkgs; [
             gcc
             gnumake
+            zlib
           ];
 
           checkInputs = with pkgs; [
