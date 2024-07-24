@@ -1,0 +1,9 @@
+build*
+.cache
+Dockerfile
+.gitignore
+.git/
+**/*.md
+.github
+LICENSE
+sign_dumper
