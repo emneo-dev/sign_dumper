@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -166,17 +167,39 @@ auto MAIN() -> int
                 };
 
                 auto *data = nbt_parse(reader, NBT_PARSE_FLAG_USE_ZLIB);
-                assert(data->type == NBT_TYPE_COMPOUND);
                 if (data->type != NBT_TYPE_COMPOUND) {
                     dprintf(2, "Chunk %d %d does not countain a compound!\n", cx, cz);
-                } else {
-                    // printf("Loaded chunk %d %d\n", cx, cz);
+                    nbt_free_tag(data);
+                    continue;
+                }
+                // printf("Loaded chunk %d %d\n", cx, cz);
+                auto *level = nbt_tag_compound_get(data, "Level");
+                assert(level);
+                auto *tile_entities = nbt_tag_compound_get(level, "TileEntities");
+                assert(tile_entities);
+                const auto num_tile_entities = tile_entities->tag_list.size;
+                for (auto i = 0; i < num_tile_entities; i++) {
+                    auto *current_tile_entity = nbt_tag_list_get(tile_entities, i);
+                    assert(current_tile_entity);
+                    auto *id = nbt_tag_compound_get(current_tile_entity, "id");
+                    if (strcmp("Sign", id->tag_string.value) != 0)
+                        continue;
+                    printf(
+                        "%s: cx:%d cz:%d x:%d y:%d z:%d text:%s %s %s %s\n", file.c_str(), cx, cz,
+                        nbt_tag_compound_get(current_tile_entity, "x")->tag_int.value,
+                        nbt_tag_compound_get(current_tile_entity, "y")->tag_int.value,
+                        nbt_tag_compound_get(current_tile_entity, "z")->tag_int.value,
+                        nbt_tag_compound_get(current_tile_entity, "Text1")->tag_string.value,
+                        nbt_tag_compound_get(current_tile_entity, "Text2")->tag_string.value,
+                        nbt_tag_compound_get(current_tile_entity, "Text3")->tag_string.value,
+                        nbt_tag_compound_get(current_tile_entity, "Text4")->tag_string.value
+                    );
                 }
 
                 nbt_free_tag(data);
             }
         }
-        printf("Loaded region from file %s completely\n", file.c_str());
+        // printf("Loaded region from file %s completely\n", file.c_str());
         free(file_contents);
     }
     return EXIT_SUCCESS;
