@@ -8,7 +8,8 @@ RUN microdnf -y install     \
     gcc-c++                 \
     libstdc++-static        \
     glibc-static            \
-    make
+    make                    \
+    zlib-static
 
 COPY . .
 
