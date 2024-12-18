@@ -57,7 +57,7 @@ static auto read_mem(void *ud, uint8_t *d, size_t s) -> size_t
     auto *u = (UserData *) ud;
     if (u->start > u->end)
         return 0;
-    // TODO(huntears) Check this +1 because this is strange uwu
+    // TODO(emneo) Check this +1 because this is strange uwu
     const auto max = ((size_t) u->end) - ((size_t) u->start) + 1;
     const auto to_copy = std::min(max, s);
     memcpy(d, u->start, to_copy);
